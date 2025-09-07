@@ -79,15 +79,13 @@ WHERE sale_date = '2022-11-05';
 
 2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
 ```sql
-SELECT 
-  *
-FROM retail_sales
+SELECT * FROM retail_sales
 WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantity >= 4
+category = 'clothing'
+AND 
+DATE_FORMAT(sale_date, '%Y-%m') = '2022-11'
+AND
+quantiy >= 4;
 ```
 
 3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
@@ -130,21 +128,15 @@ ORDER BY 1
 
 7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
 ```sql
-SELECT 
-       year,
-       month,
-    avg_sale
-FROM 
-(    
-SELECT 
-    EXTRACT(YEAR FROM sale_date) as year,
-    EXTRACT(MONTH FROM sale_date) as month,
-    AVG(total_sale) as avg_sale,
-    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale) DESC) as rank
+SELECT * FROM
+(SELECT
+     year(sale_date),
+     month(sale_date),
+ROUND(AVG(total_sale), 2) AS avg_sale,    
+RANK()OVER(PARTITION BY year(sale_date) ORDER BY AVG(total_sale) DESC) as ranks
 FROM retail_sales
-GROUP BY 1, 2
-) as t1
-WHERE rank = 1
+GROUP BY 1, 2) AS t1 
+WHERE ranks = 1;
 ```
 
 8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
